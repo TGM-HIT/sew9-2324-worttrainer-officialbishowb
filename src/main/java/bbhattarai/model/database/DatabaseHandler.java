@@ -19,7 +19,6 @@ public class DatabaseHandler implements SpeicherStrategy {
     }
 
 
-
     public List<WordImage> getWordImages() throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
         String query = "SELECT word_image_id, word, image_url FROM word_image";
@@ -42,7 +41,7 @@ public class DatabaseHandler implements SpeicherStrategy {
         return wordImages;
     }
 
-    public boolean saveWordImage(WordImage wordImage) throws SQLException{
+    public boolean saveWordImage(WordImage wordImage) throws SQLException {
         String insertQuery = "INSERT INTO word_image (word, image_url) VALUES (?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -78,7 +77,7 @@ public class DatabaseHandler implements SpeicherStrategy {
         }
     }
 
-    public List<WordImage> getUnansweredWordImages(User user) throws SQLException{
+    public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
         String query = "SELECT word_image_id, word, image_url FROM word_image WHERE word_image_id NOT IN (SELECT word_image_id FROM user_answers WHERE user_id = ?)";
 
@@ -113,7 +112,31 @@ public class DatabaseHandler implements SpeicherStrategy {
         }
     }
 
+    public User getUser(String username) throws SQLException {
+        User user = null;
 
+        String query = "SELECT user_id, total_play, wins, losses, last_played_date FROM users WHERE username = ?";
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if (username != null) {
+                preparedStatement.setString(1, username);
+            }
 
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int userId = resultSet.getInt("user_id");
+                int totalPlay = resultSet.getInt("total_play");
+                int wins = resultSet.getInt("wins");
+                int losses = resultSet.getInt("losses");
+                String lastPlayedDate = resultSet.getString("last_played_date");
+
+                user = new User(userId, username, totalPlay, wins, losses, lastPlayedDate);
+            }
+
+        }
+
+        return user;
+
+    }
 }

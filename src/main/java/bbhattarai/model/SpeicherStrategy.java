@@ -12,4 +12,6 @@ public interface SpeicherStrategy {
     List<WordImage> getUnansweredWordImages(User user) throws SQLException;
     boolean clearUserAnswers(User user) throws SQLException;
 
+    User getUser(String username) throws SQLException;
+
 }

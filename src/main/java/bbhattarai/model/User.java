@@ -24,21 +24,20 @@ public class User {
         this.username = username;
     }
 
+
     /**
-     * Constructs a new User object with the given user ID, total plays, wins, losses, and last played date.
+     * Constructs a new User object with the given username and user id.
      *
-     * @param userId         The unique identifier for the user.
-     * @param totalPlay      The total number of plays for the user.
-     * @param wins           The number of wins for the user.
-     * @param losses         The number of losses for the user.
-     * @param lastPlayedDate The date and time when the user last played.
+     * @param userId   The user id of the user.
+     * @param username The username of the user.
      */
-    public User(int userId, int totalPlay, int wins, int losses, LocalDateTime lastPlayedDate) {
+    public User(int userId, String username, int totalPlay, int wins, int losses, String lastPlayedDate) {
         this.userId = userId;
+        this.username = username;
         this.totalPlay = totalPlay;
         this.wins = wins;
         this.losses = losses;
-        this.lastPlayedDate = lastPlayedDate;
+        this.lastPlayedDate = LocalDateTime.parse(lastPlayedDate);
     }
 
     /**

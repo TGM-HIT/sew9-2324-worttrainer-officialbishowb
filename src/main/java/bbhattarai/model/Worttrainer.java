@@ -10,14 +10,11 @@ public class Worttrainer {
     SpeicherStrategy speicherStrategy;
 
 
-    public Worttrainer() {
+    public Worttrainer(SpeicherStrategy speicherStrategy) {
+        this.speicherStrategy = speicherStrategy;
     }
     public Worttrainer( User user) {
         this.user = user;
-    }
-
-    public void setSpeicherStrategy(SpeicherStrategy speicherStrategy) {
-        this.speicherStrategy = speicherStrategy;
     }
 
     public List<WordImage> getWordImages() {
@@ -34,6 +31,7 @@ public class Worttrainer {
         return user;
     }
 
+
     public boolean saveUserInfo(User user) throws SQLException {
         return speicherStrategy.saveUserInfo(user);
     }
@@ -46,6 +44,9 @@ public class Worttrainer {
         return speicherStrategy.getWordImages();
     }
 
+    public User getUser(String username) throws SQLException {
+        return speicherStrategy.getUser(username);
+    }
 
 
 

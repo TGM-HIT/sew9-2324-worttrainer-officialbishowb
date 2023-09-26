@@ -1,20 +1,29 @@
 package bbhattarai;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
-
 import bbhattarai.controlller.WorttrainerController;
+import bbhattarai.model.Worttrainer;
+import bbhattarai.model.database.DatabaseConnector;
+import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class Main  {
+public class Main extends Application {
 
-    public static void main(String[] args) {
-        WorttrainerController.main(args);
+    @Override
+    public void start(Stage primaryStage) {
+        Worttrainer model = new Worttrainer(new DatabaseHandler(DatabaseConnector.connect()));
+        WorttrainerView view = new WorttrainerView();
+        WorttrainerController controller = new WorttrainerController(model, view);
+        view.setController(controller);
+        primaryStage.setTitle("Worttrainer");
+        primaryStage.setScene(new Scene(view.getLoginRegisterView().getView(), 300, 275));
+        primaryStage.show();
+
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
