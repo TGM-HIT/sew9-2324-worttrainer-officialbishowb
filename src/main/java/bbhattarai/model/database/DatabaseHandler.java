@@ -1,5 +1,6 @@
 package bbhattarai.model.database;
 
+import bbhattarai.model.SpeicherStrategy;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
 
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHandler {
+public class DatabaseHandler implements SpeicherStrategy {
     private Connection connection;
 
     public DatabaseHandler(Connection connection) {
