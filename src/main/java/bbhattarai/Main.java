@@ -13,15 +13,19 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Worttrainer model = new Worttrainer(new DatabaseHandler(DatabaseConnector.connect()));
-        WorttrainerView view = new WorttrainerView();
+        Worttrainer model = new Worttrainer(new DatabaseHandler());
+        WorttrainerView view = new WorttrainerView(primaryStage);
         WorttrainerController controller = new WorttrainerController(model, view);
         view.setController(controller);
         primaryStage.setTitle("Worttrainer");
-        primaryStage.setScene(new Scene(view.getLoginRegisterView().getView(), 300, 275));
+        primaryStage.setMinHeight(400);
+        primaryStage.setMinWidth(700);
+
+        primaryStage.setScene(new Scene(view.getLoginRegisterView().getView()));
         primaryStage.show();
 
     }
+
 
     public static void main(String[] args) {
         launch(args);

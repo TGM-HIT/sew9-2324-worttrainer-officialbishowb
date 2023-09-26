@@ -13,8 +13,10 @@ public class Worttrainer {
     public Worttrainer(SpeicherStrategy speicherStrategy) {
         this.speicherStrategy = speicherStrategy;
     }
-    public Worttrainer( User user) {
-        this.user = user;
+
+
+    public void setSpeicherStrategy(SpeicherStrategy speicherStrategy) {
+        this.speicherStrategy = speicherStrategy;
     }
 
     public List<WordImage> getWordImages() {
@@ -27,13 +29,27 @@ public class Worttrainer {
     }
 
 
+    public void setUser(User user) {
+        this.user = user;
+    }
     public User getUser() {
         return user;
     }
 
+    public int getLatestUserId() throws SQLException {
+        return speicherStrategy.getLatestUserId();
+    }
 
     public boolean saveUserInfo(User user) throws SQLException {
         return speicherStrategy.saveUserInfo(user);
+    }
+
+    public boolean saveNewUser(User user) throws SQLException {
+        return speicherStrategy.saveNewUser(user);
+    }
+
+    public boolean clearUserAnswers(User user) throws SQLException {
+        return speicherStrategy.clearUserAnswers(user);
     }
 
     public List<WordImage> getUnansweredWordImages(User user) throws SQLException {

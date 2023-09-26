@@ -30,11 +30,9 @@ public class DatabaseConnector {
         }
     }
 
-    public static void main(String[] args) {
-        Connection connection = connect();
-        DatabaseHandler databaseHandler = new DatabaseHandler(connection);
-
-
-        disconnect(connection);
+    public static Connection getConnection() {
+        return connect();
     }
+
+
 }

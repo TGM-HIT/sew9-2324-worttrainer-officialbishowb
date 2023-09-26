@@ -4,18 +4,19 @@ import bbhattarai.model.SpeicherStrategy;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler implements SpeicherStrategy {
     private Connection connection;
 
-    public DatabaseHandler(Connection connection) {
-        this.connection = connection;
+    public DatabaseHandler() {
+        this.connection = DatabaseConnector.connect();
     }
 
 
@@ -79,14 +80,14 @@ public class DatabaseHandler implements SpeicherStrategy {
 
     public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
-        String query = "SELECT word_image_id, word, image_url FROM word_image WHERE word_image_id NOT IN (SELECT word_image_id FROM user_answers WHERE user_id = ?)";
+        String query = "SELECT id, word, image_url FROM word_image WHERE id NOT IN (SELECT word_image_id FROM user_answers WHERE user_id = ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, user.getUserId());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                int wordImageId = resultSet.getInt("word_image_id");
+                int wordImageId = resultSet.getInt("id");
                 String word = resultSet.getString("word");
                 String imageUrl = resultSet.getString("image_url");
 
@@ -115,7 +116,7 @@ public class DatabaseHandler implements SpeicherStrategy {
     public User getUser(String username) throws SQLException {
         User user = null;
 
-        String query = "SELECT user_id, total_play, wins, losses, last_played_date FROM users WHERE username = ?";
+        String query = "SELECT  user_id, total_play, wins, losses, last_played_date FROM users WHERE username = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             if (username != null) {
@@ -129,14 +130,51 @@ public class DatabaseHandler implements SpeicherStrategy {
                 int totalPlay = resultSet.getInt("total_play");
                 int wins = resultSet.getInt("wins");
                 int losses = resultSet.getInt("losses");
-                String lastPlayedDate = resultSet.getString("last_played_date");
+                long lastPlayedMillis = resultSet.getLong("last_played_date");
 
-                user = new User(userId, username, totalPlay, wins, losses, lastPlayedDate);
+                // Convert milliseconds to LocalDateTime
+                LocalDateTime lastPlayedDateTime = Instant.ofEpochMilli(lastPlayedMillis)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
+
+                user = new User(userId, username, totalPlay, wins, losses, lastPlayedDateTime);
             }
-
         }
 
         return user;
+    }
 
+
+    public int getLatestUserId() throws SQLException {
+        int latestUserId = 0;
+
+        String query = "SELECT MAX(user_id) AS latest_user_id FROM users";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                latestUserId = resultSet.getInt("latest_user_id");
+            }
+        }
+
+        return latestUserId;
+    }
+
+    public boolean saveNewUser(User user) throws SQLException {
+        String insertQuery = "INSERT INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            preparedStatement.setInt(1, user.getUserId());
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setInt(3, user.getTotalPlay());
+            preparedStatement.setInt(4, user.getWins());
+            preparedStatement.setInt(5, user.getLosses());
+            preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        }
     }
 }

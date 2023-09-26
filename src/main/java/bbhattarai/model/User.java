@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
  * Represents a user in the application.
  */
 public class User {
-    private int userId;
 
+    private int userId;
     private String username;
     private int totalPlay;
     private int wins;
@@ -25,19 +25,25 @@ public class User {
     }
 
 
+
     /**
-     * Constructs a new User object with the given username and user id.
+     * Constructs a new User object with the given username, total number of plays, number of wins, number of losses,
+     * and last played date and time.
      *
-     * @param userId   The user id of the user.
-     * @param username The username of the user.
+     * @param userID         The user's unique identifier.
+     * @param username       The username of the user.
+     * @param totalPlay      The total number of plays.
+     * @param wins           The number of wins.
+     * @param losses         The number of losses.
+     * @param lastPlayedDate The last played date and time.
      */
-    public User(int userId, String username, int totalPlay, int wins, int losses, String lastPlayedDate) {
-        this.userId = userId;
+    public User(int userID, String username, int totalPlay, int wins, int losses, LocalDateTime lastPlayedDate) {
+        this.userId = userID;
         this.username = username;
         this.totalPlay = totalPlay;
         this.wins = wins;
         this.losses = losses;
-        this.lastPlayedDate = LocalDateTime.parse(lastPlayedDate);
+        this.lastPlayedDate = lastPlayedDate;
     }
 
     /**

@@ -6,12 +6,17 @@ CREATE TABLE IF NOT EXISTS users (
  losses INTEGER,
  last_played_date DATETIME
 );
+DELETE FROM sqlite_sequence WHERE name = 'users';
+
+UPDATE SQLITE_SEQUENCE SET seq = (SELECT MAX(user_id) FROM users) WHERE name = 'users';
+
 
 CREATE TABLE IF NOT EXISTS word_image (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     word TEXT,
     image_url TEXT
 );
+
 
 CREATE TABLE IF NOT EXISTS user_answers (
     user_correct_answer_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,14 +29,5 @@ CREATE TABLE IF NOT EXISTS user_answers (
 
 -- Insert 10 dummy word-image pairs
 INSERT INTO word_image (word, image_url) VALUES
- ('Apple', 'image1.jpg'),
- ('Banana', 'image2.jpg'),
- ('Cat', 'image3.jpg'),
- ('Dog', 'image4.jpg'),
- ('Elephant', 'image5.jpg'),
- ('Fish', 'image6.jpg'),
- ('Giraffe', 'image7.jpg'),
- ('Horse', 'image8.jpg'),
- ('Ice Cream', 'image9.jpg'),
- ('Jellyfish', 'image10.jpg');
+ ('Google', 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2000px-Google_2015_logo.svg.png');
 

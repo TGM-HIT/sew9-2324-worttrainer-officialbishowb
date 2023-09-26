@@ -6,6 +6,8 @@ import java.util.List;
 public interface SpeicherStrategy {
 
     boolean saveUserInfo(User user) throws SQLException;
+
+    boolean saveNewUser(User user) throws SQLException;
     List<WordImage> getWordImages() throws SQLException;
     boolean saveWordImage(WordImage wordImage) throws SQLException;
 
@@ -13,5 +15,7 @@ public interface SpeicherStrategy {
     boolean clearUserAnswers(User user) throws SQLException;
 
     User getUser(String username) throws SQLException;
+
+    int getLatestUserId() throws SQLException;
 
 }
