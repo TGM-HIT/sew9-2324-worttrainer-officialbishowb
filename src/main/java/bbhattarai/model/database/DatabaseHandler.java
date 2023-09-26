@@ -78,6 +78,41 @@ public class DatabaseHandler implements SpeicherStrategy {
         }
     }
 
+    public List<WordImage> getUnansweredWordImages(User user) throws SQLException{
+        List<WordImage> wordImages = new ArrayList<>();
+        String query = "SELECT word_image_id, word, image_url FROM word_image WHERE word_image_id NOT IN (SELECT word_image_id FROM user_answers WHERE user_id = ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, user.getUserId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int wordImageId = resultSet.getInt("word_image_id");
+                String word = resultSet.getString("word");
+                String imageUrl = resultSet.getString("image_url");
+
+                WordImage wordImage = new WordImage(wordImageId, word, imageUrl);
+                wordImages.add(wordImage);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return wordImages;
+    }
+
+    public boolean clearUserAnswers(User user) throws SQLException {
+        String deleteQuery = "DELETE FROM user_answers WHERE user_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+            preparedStatement.setInt(1, user.getUserId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        }
+    }
+
 
 
 

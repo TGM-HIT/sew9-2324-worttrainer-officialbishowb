@@ -1,36 +1,37 @@
 package bbhattarai.view;
 
 import bbhattarai.model.User;
+import bbhattarai.model.WordImage;
+import bbhattarai.view.layouts.LoginRegisterView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class WorttrainerView extends  Application {
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class WorttrainerView extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
-    public void start(Stage stage) {
-        stage = WorttrainerView.initStage(stage);
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) {
+        // Create the login/register view
+        LoginRegisterView loginRegisterView = new LoginRegisterView();
+
+        Scene scene = new Scene(loginRegisterView.getView(), 400, 300);
+        primaryStage.setTitle("Worttrainer App");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-    public static Stage initStage(Stage primaryStage) {
-        primaryStage.setTitle("WortTrainer - Rechtschreibung lernen");
-        return primaryStage;
+    public LoginRegisterView getLoginRegisterView() {
+        LoginRegisterView loginRegisterView = new LoginRegisterView();
+        return loginRegisterView;
     }
-
-    public void loadSavedData(){
-
-    }
-
-    public static void main(String[] args) {
-        launch();
-    }
-
 }
+

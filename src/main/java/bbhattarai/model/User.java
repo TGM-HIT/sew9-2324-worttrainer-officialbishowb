@@ -7,10 +7,22 @@ import java.time.LocalDateTime;
  */
 public class User {
     private int userId;
+
+    private String username;
     private int totalPlay;
     private int wins;
     private int losses;
     private LocalDateTime lastPlayedDate;
+
+
+    /**
+     * Constructs a new User object with the given username.
+     *
+     * @param username The username of the user.
+     */
+    public User(String username) {
+        this.username = username;
+    }
 
     /**
      * Constructs a new User object with the given user ID, total plays, wins, losses, and last played date.
@@ -45,6 +57,25 @@ public class User {
      */
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    /**
+     * Gets the username of the user.
+     *
+     * @return The username of the user.
+     */
+    public String getUsername() {
+        return username;
+    }
+
+/**
+     * Sets the username of the user.
+     *
+     * @param username The username of the user.
+     */
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

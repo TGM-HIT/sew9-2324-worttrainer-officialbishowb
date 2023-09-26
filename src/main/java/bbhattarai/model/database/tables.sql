@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
  user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+ username TEXT,
  total_play INTEGER,
  wins INTEGER,
  losses INTEGER,
@@ -17,7 +18,8 @@ CREATE TABLE IF NOT EXISTS user_answers (
     user_id INTEGER,
     word_image_id INTEGER,
     answered_at DATETIME,
-    FOREIGN KEY (word_image_id) REFERENCES word_image(id)
+    FOREIGN KEY (word_image_id) REFERENCES word_image(id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Insert 10 dummy word-image pairs
