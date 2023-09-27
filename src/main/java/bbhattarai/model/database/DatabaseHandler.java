@@ -99,7 +99,7 @@ public class DatabaseHandler implements SpeicherStrategy {
 
     public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
-        String query = "SELECT id, word, image_url FROM word_image WHERE id NOT IN (SELECT word_image_id FROM user_answers WHERE user_id = ?)";
+        String query = "SELECT id, word, image_url FROM word_image WHERE id NOT IN (SELECT id FROM user_answers WHERE user_id = ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, user.getUserId());
@@ -190,6 +190,37 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setInt(4, user.getWins());
             preparedStatement.setInt(5, user.getLosses());
             preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        }
+    }
+
+    public int getLatestUserAnswerId() throws SQLException{
+
+        int latestUserAnswerId = 0;
+
+        String query = "SELECT MAX(id) AS latest_user_answer_id FROM user_answers";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                latestUserAnswerId = resultSet.getInt("latest_user_answer_id");
+            }
+        }
+
+        return latestUserAnswerId;
+    }
+
+    public boolean addUserWordImage(User user, WordImage wordImage) throws SQLException{
+        String insertQuery = "INSERT INTO user_answers (id, user_id, word_image_id) VALUES (?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            preparedStatement.setInt(1, getLatestUserAnswerId()+1);
+            preparedStatement.setInt(2, user.getUserId());
+            preparedStatement.setInt(3, wordImage.getWordImageId());
 
             int rowsAffected = preparedStatement.executeUpdate();
 

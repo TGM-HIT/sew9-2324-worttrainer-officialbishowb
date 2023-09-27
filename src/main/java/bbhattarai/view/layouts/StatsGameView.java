@@ -18,6 +18,8 @@ public class StatsGameView {
     private Text statsHeader;
     private Button restartGameButton;
 
+    private Button exitApplicationButton;
+
     private User user;
 
     WorttrainerController controller;
@@ -42,10 +44,13 @@ public class StatsGameView {
         statsText = new Text("Total Wins: " + totalWins.getText() + "\nTotal Losses: " + totalLosses.getText() + "\nTotal Play: " + totalPlay.getText());
 
         restartGameButton = new Button("Restart Game");
+        exitApplicationButton = new Button("Exit Application");
+
         restartGameButton.setStyle("-fx-font-size: 18px; -fx-background-color: green; -fx-text-fill: white;");
+        exitApplicationButton.setStyle("-fx-font-size: 18px; -fx-background-color: red; -fx-text-fill: white;");
 
         // Add the stats header and stats text to a VBox and below that add the restart game button
-        VBox content = new VBox(statsHeader, statsText, restartGameButton);
+        VBox content = new VBox(statsHeader, statsText, restartGameButton, exitApplicationButton);
         content.setAlignment(Pos.CENTER);
         content.setSpacing(20);
 
@@ -55,18 +60,17 @@ public class StatsGameView {
         restartGameButton.setOnAction(event -> {
 
             restartGameButton.setText("Restarting...");
-            // Reset the user stats
-            user.setTotalPlay(0);
-            user.setWins(0);
-            user.setLosses(0);
-
 
             // Save the user stats
-            controller.saveUserData(user);
+            controller.saveUserData(this.user);
 
             // Start the game again
-            controller.handleStartGame(user);
+            controller.handleStartGame(this.user,true);
 
+        });
+
+        exitApplicationButton.setOnAction(event -> {
+            System.exit(0);
         });
 
     }
@@ -76,14 +80,4 @@ public class StatsGameView {
         return view;
     }
 
-    public Text getStatsText() {
-        return statsText;
-    }
-
-
-
-
-    public Button getRestartGameButton() {
-        return restartGameButton;
-    }
 }

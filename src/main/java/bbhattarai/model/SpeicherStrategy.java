@@ -18,4 +18,8 @@ public interface SpeicherStrategy {
 
     int getLatestUserId() throws SQLException;
 
+    boolean addUserWordImage(User user, WordImage wordImage) throws SQLException;
+
+     int getLatestUserAnswerId() throws SQLException;
+
 }

@@ -3,18 +3,13 @@ package bbhattarai.controlller;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
 import bbhattarai.model.Worttrainer;
-import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
 import bbhattarai.view.layouts.StatsGameView;
-import bbhattarai.view.layouts.UserExistOrNotView;
+import bbhattarai.view.layouts.UserView;
 import bbhattarai.view.layouts.WordImageGameView;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 import javax.swing.*;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,7 +37,7 @@ public class WorttrainerController {
                 this.model.setUser(user);
             }
             // Instantiate the NextView
-            UserExistOrNotView nextView = new UserExistOrNotView(model.getUser(), this);
+            UserView nextView = new UserView(model.getUser(), this);
 
             // Set up the NextView as the new view to display
             view.setDisplayedView(nextView.getView());
@@ -52,7 +47,7 @@ public class WorttrainerController {
     }
 
 
-    public void handleStartGame(User user) {
+    public void handleStartGame(User user,boolean isEndRestartButtonClicked){
         List<WordImage> wordImages = null;
         try {
             wordImages = model.getUnansweredWordImages(user);
@@ -62,15 +57,27 @@ public class WorttrainerController {
 
         if(wordImages.isEmpty()) {
             // Ask user if they want to play again
-            int dialogResult = JOptionPane.showConfirmDialog(null, "You have answered all the questions. Do you want to play again?", "Warning", JOptionPane.YES_NO_OPTION);
+            int dialogResult = JOptionPane.YES_OPTION;
+            if(!isEndRestartButtonClicked) {
+                dialogResult = JOptionPane.showConfirmDialog(null, "You have answered all the questions. Do you want to play again?", "Warning", JOptionPane.YES_NO_OPTION);
+            }
 
             if (dialogResult == JOptionPane.YES_OPTION) {
                 try {
                     model.clearUserAnswers(user);
                     wordImages = model.getUnansweredWordImages(user);
+                    // Clear user answers
+                    user.resetStats();
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }else{
+                // Display the new statsview
+                StatsGameView nextView = new StatsGameView(user, this);
+
+                view.setDisplayedView(nextView.getView());
+                return;
             }
         }
 
@@ -79,8 +86,6 @@ public class WorttrainerController {
 
 
         view.setDisplayedView(nextView.getView());
-
-
 
     }
 
@@ -98,7 +103,17 @@ public class WorttrainerController {
             model.saveUserInfo(user);
         } catch (SQLException e) {
             e.printStackTrace();
-        } }
+        }
+    }
+
+    public void addUserAnsweredWordImage(User user, WordImage wordImage){
+        try{
+            model.addUserWordImage(user, wordImage);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

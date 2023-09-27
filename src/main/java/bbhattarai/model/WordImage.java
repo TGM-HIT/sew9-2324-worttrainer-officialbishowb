@@ -15,10 +15,16 @@ public class WordImage {
      * @param word Das Wort, das dem Bild zugeordnet ist.
      * @param imageUrl Die URL des Bildes, das dem Wort zugeordnet ist.
      */
-    public WordImage(int wordImageId, String word, String imageUrl) {
+    public WordImage(int wordImageId, String word, String imageUrl) throws IllegalArgumentException {
         this.wordImageId = wordImageId;
         this.word = word;
-        this.imageUrl = imageUrl;
+
+        // Überprüfe, ob die URL valide ist
+        if(validateImageUrl(imageUrl)){
+            this.imageUrl = imageUrl;
+        }else{
+            throw new IllegalArgumentException("Invalid image URL");
+        }
     }
 
     /**
@@ -73,6 +79,16 @@ public class WordImage {
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+
+    /**
+     * Überprüft, ob die URL des Bildes valide ist.
+     * @param imageUrl
+     * @return
+     */
+    public boolean validateImageUrl(String imageUrl){
+        return imageUrl.matches("^(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)$");
     }
 
     /**

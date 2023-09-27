@@ -24,10 +24,9 @@ CREATE TABLE IF NOT EXISTS word_image (
 
 
 CREATE TABLE IF NOT EXISTS user_answers (
-    user_correct_answer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     word_image_id INTEGER,
-    answered_at DATETIME,
     FOREIGN KEY (word_image_id) REFERENCES word_image(id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );

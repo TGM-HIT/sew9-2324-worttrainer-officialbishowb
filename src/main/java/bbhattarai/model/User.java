@@ -155,6 +155,15 @@ public class User {
         this.lastPlayedDate = lastPlayedDate;
     }
 
+
+    /**
+     * Resets the user's statistics.
+     */
+    public void resetStats() {
+        this.totalPlay = 0;
+        this.wins = 0;
+        this.losses = 0;
+    }
     /**
      * {@inheritDoc}
      */

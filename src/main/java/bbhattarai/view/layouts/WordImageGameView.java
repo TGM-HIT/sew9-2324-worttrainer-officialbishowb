@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import javax.swing.*;
 import java.util.List;
 
 public class WordImageGameView {
@@ -76,14 +77,23 @@ public class WordImageGameView {
 
                 String enteredName = nameField.getText();
 
+                if (enteredName.isEmpty()) {
+                    // Set the border color to red
+                    nameField.setStyle("-fx-border-color: red");
+                    JOptionPane.showMessageDialog(null, "Input cannot be empty");
+                    return;
+                }
+
+
                 // If the input is correct, then we call the handleCorrectAnswer method to add it to the database
                 if (enteredName.equals(wordImages.get(currentImageIndex).getWord())) {
                     this.user.setWins(this.user.getWins() + 1);
 
+                    // Add the user answered word image to the database
+                    controller.addUserAnsweredWordImage(this.user, wordImages.get(currentImageIndex));
+
+                    // Remove the word image from the list so that it is not displayed again
                     this.wordImages.remove(currentImageIndex);
-
-
-                    // 
 
                 }else{
                     this.user.setLosses(this.user.getLosses() + 1);

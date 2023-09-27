@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
 
+import javax.swing.*;
+
 public class LoginRegisterView {
     private BorderPane view;
     private TextField usernameField;
@@ -41,8 +43,15 @@ public class LoginRegisterView {
 
     public void addListener() {
         loginRegisterButton.setOnAction(event -> {
+            String username = usernameField.getText();
+
+           if (username.isEmpty()) {
+                usernameField.setStyle("-fx-border-color: red;");
+                JOptionPane.showMessageDialog(null, "Please enter a username");
+                return;
+            }
             loginRegisterButton.setText("Logging or registering...");
-            this.handler.handleLoginRegister(usernameField.getText());
+            this.handler.handleLoginRegister(username);
         });
     }
     public BorderPane getView() {
