@@ -4,6 +4,7 @@ import bbhattarai.model.SpeicherStrategy;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
 
+import java.io.*;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -13,13 +14,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler implements SpeicherStrategy {
-    private Connection connection;
+    private final Connection connection;
 
     public DatabaseHandler() {
         this.connection = DatabaseConnector.connect();
     }
 
 
+    public void initTables(){
+        String srcPath = System.getProperty("user.dir");
+        String sql_script = srcPath + "/src/main/java/bbhattarai/model/database/tables.sql";
+        try {
+            InputStream inputStream = getClass().getResourceAsStream(sql_script);
+            if (inputStream == null) {
+                System.out.println("inputStream is null");
+                return;
+            }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                connection.createStatement().execute(line);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public List<WordImage> getWordImages() throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
         String query = "SELECT word_image_id, word, image_url FROM word_image";
@@ -63,15 +82,15 @@ public class DatabaseHandler implements SpeicherStrategy {
     }
 
     public boolean saveUserInfo(User user) throws SQLException {
-        String insertQuery = "INSERT OR REPLACE INTO users (user_id, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT OR REPLACE INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setInt(1, user.getUserId());
-            preparedStatement.setInt(2, user.getTotalPlay());
-            preparedStatement.setInt(3, user.getWins());
-            preparedStatement.setInt(4, user.getLosses());
-            preparedStatement.setObject(5, user.getLastPlayedDate());
-
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setInt(3, user.getTotalPlay());
+            preparedStatement.setInt(4, user.getWins());
+            preparedStatement.setInt(5, user.getLosses());
+            preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
             int rowsAffected = preparedStatement.executeUpdate();
 
             return rowsAffected > 0;
@@ -176,5 +195,10 @@ public class DatabaseHandler implements SpeicherStrategy {
 
             return rowsAffected > 0;
         }
+    }
+
+    public static void main(String[] args) {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        databaseHandler.initTables();
     }
 }

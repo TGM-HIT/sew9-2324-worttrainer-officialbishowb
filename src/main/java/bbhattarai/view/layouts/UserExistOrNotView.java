@@ -28,6 +28,7 @@ public class UserExistOrNotView {
         startGameButton.setStyle("-fx-font-size: 18px; -fx-background-color: green; -fx-text-fill: white;");
 
         startGameButton.setOnAction(event -> {
+            startGameButton.setText("Loading word and images...");
             controller.handleStartGame(user);
         });
         content.getChildren().add(startGameButton);

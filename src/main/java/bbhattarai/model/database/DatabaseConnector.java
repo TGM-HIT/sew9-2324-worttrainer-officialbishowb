@@ -6,11 +6,15 @@ import java.sql.SQLException;
 
 public class DatabaseConnector {
 
-    private static final String DATABASE_URL = "jdbc:sqlite:worttrainer.db";
+
+    private static String DATABASE_URL = "jdbc:sqlite:";
 
     public static Connection connect() {
+        String srcPath = System.getProperty("user.dir");
+        String sqlScriptPath = srcPath + "/src/main/java/bbhattarai/model/database/worttrainer.db";
         Connection connection = null;
         try {
+            DATABASE_URL = DATABASE_URL.concat(sqlScriptPath);
             connection = DriverManager.getConnection(DATABASE_URL);
             System.out.println("Connected to the database");
         } catch (SQLException e) {
@@ -32,6 +36,11 @@ public class DatabaseConnector {
 
     public static Connection getConnection() {
         return connect();
+    }
+
+
+    public static void main(String[] args) {
+        DatabaseConnector.connect();
     }
 
 

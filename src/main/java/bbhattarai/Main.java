@@ -20,7 +20,6 @@ public class Main extends Application {
         primaryStage.setTitle("Worttrainer");
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(700);
-
         primaryStage.setScene(new Scene(view.getLoginRegisterView().getView()));
         primaryStage.show();
 

@@ -21,9 +21,14 @@ public class LoginRegisterView {
 
         usernameField = new TextField();
         usernameField.setPromptText("Enter username");
+        usernameField.setMinWidth(200);
+        usernameField.setMinHeight(50);
+        usernameField.setStyle("-fx-font-size: 18px;");
 
         loginRegisterButton = new Button("Login / Register");
-
+        loginRegisterButton.setStyle("-fx-font-size: 18px; -fx-background-color: black; -fx-text-fill: white;");
+        loginRegisterButton.setMinWidth(250);
+        loginRegisterButton.setMinHeight(30);
         VBox loginBox = new VBox(usernameField, loginRegisterButton);
         loginBox.setSpacing(10);
         loginBox.setMaxWidth(200);
@@ -36,6 +41,7 @@ public class LoginRegisterView {
 
     public void addListener() {
         loginRegisterButton.setOnAction(event -> {
+            loginRegisterButton.setText("Logging or registering...");
             this.handler.handleLoginRegister(usernameField.getText());
         });
     }

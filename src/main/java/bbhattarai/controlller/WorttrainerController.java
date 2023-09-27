@@ -5,6 +5,7 @@ import bbhattarai.model.WordImage;
 import bbhattarai.model.Worttrainer;
 import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
+import bbhattarai.view.layouts.StatsGameView;
 import bbhattarai.view.layouts.UserExistOrNotView;
 import bbhattarai.view.layouts.WordImageGameView;
 import javafx.application.Platform;
@@ -37,6 +38,7 @@ public class WorttrainerController {
                 model.saveNewUser(user);
                 JOptionPane.showMessageDialog(null, "User created successfully");
             }else{
+                JOptionPane.showMessageDialog(null, "Welcome back "+username+"!");
                 this.model.setUser(user);
             }
             // Instantiate the NextView
@@ -73,7 +75,7 @@ public class WorttrainerController {
         }
 
         // Start the game with WordImageGameView as the view
-        WordImageGameView nextView = new WordImageGameView(this, wordImages);
+        WordImageGameView nextView = new WordImageGameView(this, wordImages, user);
 
 
         view.setDisplayedView(nextView.getView());
@@ -82,6 +84,21 @@ public class WorttrainerController {
 
     }
 
+
+    public void handleEndGame(User user){
+        // Display the new statsview
+        StatsGameView nextView = new StatsGameView(user, this);
+
+        view.setDisplayedView(nextView.getView());
+
+    }
+
+    public void saveUserData(User user){
+            try {
+            model.saveUserInfo(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } }
 
 
 }

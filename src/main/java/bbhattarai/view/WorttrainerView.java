@@ -30,8 +30,8 @@ public class WorttrainerView  {
         Scene scene = new Scene(newView);
         primaryStage.setScene(scene);
 
-        primaryStage.setWidth(700);
-        primaryStage.setHeight(400);
+        primaryStage.setMinWidth(700);
+        primaryStage.setMinHeight(400);
 
         primaryStage.show();
     }

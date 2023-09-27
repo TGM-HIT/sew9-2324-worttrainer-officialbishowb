@@ -14,7 +14,6 @@ public class Worttrainer {
         this.speicherStrategy = speicherStrategy;
     }
 
-
     public void setSpeicherStrategy(SpeicherStrategy speicherStrategy) {
         this.speicherStrategy = speicherStrategy;
     }
