@@ -1,7 +1,6 @@
 package bbhattarai.view.layouts;
 
 import bbhattarai.controlller.WorttrainerController;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

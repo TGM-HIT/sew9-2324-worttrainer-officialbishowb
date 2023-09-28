@@ -2,8 +2,6 @@ package bbhattarai.view;
 
 import bbhattarai.controlller.WorttrainerController;
 import bbhattarai.view.layouts.LoginRegisterView;
-import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

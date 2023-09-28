@@ -2,6 +2,7 @@ package bbhattarai.view.layouts;
 
 import bbhattarai.controlller.WorttrainerController;
 import bbhattarai.model.User;
+import bbhattarai.model.WordImage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -46,7 +47,9 @@ public class UserView {
         content.getChildren().add(startGameButton);
 
 
-
+        // Add WordImageInputEntryView button to the content
+        WordImageInputEntryView wordImageInputEntryView = new WordImageInputEntryView(controller);
+        content.getChildren().add(wordImageInputEntryView.getAddImageButton());
         view.setCenter(content);
     }
 

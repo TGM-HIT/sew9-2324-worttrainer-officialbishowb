@@ -2,7 +2,6 @@ package bbhattarai.view.layouts;
 
 import bbhattarai.controlller.WorttrainerController;
 import bbhattarai.model.User;
-import bbhattarai.model.WordImage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;

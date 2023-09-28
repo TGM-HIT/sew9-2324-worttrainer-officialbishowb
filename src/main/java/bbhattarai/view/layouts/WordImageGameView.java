@@ -116,12 +116,12 @@ public class WordImageGameView {
                     imageView.setImage(new Image(wordImages.get(currentImageIndex).getImageUrl()));
                     nameField.setText("");
                 }else{
-                        controller.handleEndGame(this.user);
+                        this.controller.handleEndGame(this.user);
 
                 }
 
                 // Save the user to the database
-                controller.saveUserData(this.user);
+                this.controller.saveUserData(this.user);
 
 
         });

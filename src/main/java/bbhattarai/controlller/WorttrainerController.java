@@ -54,7 +54,6 @@ public class WorttrainerController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         if(wordImages.isEmpty()) {
             // Ask user if they want to play again
             int dialogResult = JOptionPane.YES_OPTION;
@@ -112,6 +111,11 @@ public class WorttrainerController {
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+
+    public void newimageWordInputEntry(WordImage wordImage){
+        System.out.println("Adding new word image entry");
     }
 
 

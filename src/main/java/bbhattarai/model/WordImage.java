@@ -27,6 +27,16 @@ public class WordImage {
         }
     }
 
+    public WordImage(String word, String imageUrl) throws IllegalArgumentException {
+        this.word = word;
+
+        // Überprüfe, ob die URL valide ist
+        if(validateImageUrl(imageUrl)){
+            this.imageUrl = imageUrl;
+        }else{
+            throw new IllegalArgumentException("Invalid image URL");
+        }
+    }
     /**
      * Gibt die WordImage-ID zurück.
      *

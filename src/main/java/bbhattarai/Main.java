@@ -2,7 +2,6 @@ package bbhattarai;
 
 import bbhattarai.controlller.WorttrainerController;
 import bbhattarai.model.Worttrainer;
-import bbhattarai.model.database.DatabaseConnector;
 import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
 import javafx.application.Application;
