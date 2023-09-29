@@ -19,6 +19,7 @@ public class StatsGameView {
 
     private Button exitApplicationButton;
 
+    private Button homeButton;
     private User user;
 
     WorttrainerController controller;
@@ -28,7 +29,7 @@ public class StatsGameView {
         this.controller = controller;
         view = new BorderPane();
 
-        statsHeader = new Text("Your Stats");
+        statsHeader = new Text("Deine Statistiken");
         statsHeader.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
         // Bold font
@@ -40,16 +41,18 @@ public class StatsGameView {
         Text totalPlay = new Text(String.valueOf(user.getTotalPlay()));
         totalPlay.setFont(boldFont);
 
-        statsText = new Text("Total Wins: " + totalWins.getText() + "\nTotal Losses: " + totalLosses.getText() + "\nTotal Play: " + totalPlay.getText());
+        statsText = new Text("Gewonnen" + totalWins.getText() + "\nVerloren: " + totalLosses.getText() + "\nInsgesamt gespielt: " + totalPlay.getText());
 
-        restartGameButton = new Button("Restart Game");
-        exitApplicationButton = new Button("Exit Application");
+        restartGameButton = new Button("Spiel neustarten");
+        homeButton = new Button("Home");
+        exitApplicationButton = new Button("Beenden");
 
+        homeButton.setStyle("-fx-font-size: 18px; -fx-background-color: orange; -fx-text-fill: white;");
         restartGameButton.setStyle("-fx-font-size: 18px; -fx-background-color: green; -fx-text-fill: white;");
         exitApplicationButton.setStyle("-fx-font-size: 18px; -fx-background-color: red; -fx-text-fill: white;");
 
         // Add the stats header and stats text to a VBox and below that add the restart game button
-        VBox content = new VBox(statsHeader, statsText, restartGameButton, exitApplicationButton);
+        VBox content = new VBox(statsHeader, statsText, restartGameButton, homeButton, exitApplicationButton);
         content.setAlignment(Pos.CENTER);
         content.setSpacing(20);
 
@@ -58,7 +61,7 @@ public class StatsGameView {
 
         restartGameButton.setOnAction(event -> {
 
-            restartGameButton.setText("Restarting...");
+            restartGameButton.setText("Wird neugestartet...");
 
             // Save the user stats
             controller.saveUserData(this.user);
@@ -70,6 +73,10 @@ public class StatsGameView {
 
         exitApplicationButton.setOnAction(event -> {
             System.exit(0);
+        });
+
+        homeButton.setOnAction(event -> {
+            controller.backToUserHome(this.user);
         });
 
     }

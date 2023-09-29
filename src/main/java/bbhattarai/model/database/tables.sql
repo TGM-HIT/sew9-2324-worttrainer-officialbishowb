@@ -33,5 +33,6 @@ CREATE TABLE IF NOT EXISTS user_answers (
 
 -- Insert 10 dummy word-image pairs
 INSERT INTO word_image (word, image_url) VALUES
- ('Google', 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2000px-Google_2015_logo.svg.png');
+ ('Google', 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2000px-Google_2015_logo.svg.png'),
+ ('Apfel','https://freepngimg.com/thumb/apple/9-apple-png-image.png') ;
 

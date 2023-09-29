@@ -64,10 +64,14 @@ public class Worttrainer {
     }
 
 
-    public boolean addUserWordImage(User user, WordImage wordImage) throws SQLException {
-        return speicherStrategy.addUserWordImage(user, wordImage);
+    public boolean addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException {
+        return speicherStrategy.addUserWordImageAnswer(user, wordImage);
     }
 
+
+    public boolean saveWordImage(WordImage wordImage) throws SQLException {
+        return speicherStrategy.saveWordImage(wordImage);
+    }
 
 
 

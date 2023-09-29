@@ -22,7 +22,7 @@ public class UserView {
         content.setSpacing(20);
 
 
-        Button startGameButton = new Button("Start game");
+        Button startGameButton = new Button("Spielen starten");
         startGameButton.setStyle("-fx-font-size: 18px; -fx-background-color: green; -fx-text-fill: white;");
 
         startGameButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
@@ -47,9 +47,9 @@ public class UserView {
         content.getChildren().add(startGameButton);
 
 
-        // Add WordImageInputEntryView button to the content
+        // Add WordImageInputEntryView button to the right bottom corner
         WordImageInputEntryView wordImageInputEntryView = new WordImageInputEntryView(controller);
-        content.getChildren().add(wordImageInputEntryView.getAddImageButton());
+        view.setBottom(wordImageInputEntryView.getAddImageButton());
         view.setCenter(content);
     }
 

@@ -21,12 +21,12 @@ public class LoginRegisterView {
         view = new BorderPane();
 
         usernameField = new TextField();
-        usernameField.setPromptText("Enter username");
+        usernameField.setPromptText("Nutzername eingeben");
         usernameField.setMinWidth(200);
         usernameField.setMinHeight(50);
         usernameField.setStyle("-fx-font-size: 18px;");
 
-        loginRegisterButton = new Button("Login / Register");
+        loginRegisterButton = new Button("Login / Registrieren");
         loginRegisterButton.setStyle("-fx-font-size: 18px; -fx-background-color: black; -fx-text-fill: white;");
         loginRegisterButton.setMinWidth(250);
         loginRegisterButton.setMinHeight(30);
@@ -46,10 +46,10 @@ public class LoginRegisterView {
 
            if (username.isEmpty()) {
                 usernameField.setStyle("-fx-border-color: red;");
-                JOptionPane.showMessageDialog(null, "Please enter a username");
+                JOptionPane.showMessageDialog(null, "Nutzername darf nicht leer sein");
                 return;
             }
-            loginRegisterButton.setText("Logging or registering...");
+            loginRegisterButton.setText("Bitte warten...");
             this.handler.handleLoginRegister(username);
         });
     }

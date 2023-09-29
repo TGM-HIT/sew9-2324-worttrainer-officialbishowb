@@ -61,11 +61,14 @@ public class DatabaseHandler implements SpeicherStrategy {
     }
 
     public boolean saveWordImage(WordImage wordImage) throws SQLException {
-        String insertQuery = "INSERT INTO word_image (word, image_url) VALUES (?, ?)";
+        wordImage.setWordImageId(getLatestWordImageId()+1);
+        String insertQuery = "INSERT INTO word_image (id, word, image_url) VALUES (?, ?, ?)";
+
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
-            preparedStatement.setString(1, wordImage.getWord());
-            preparedStatement.setString(2, wordImage.getImageUrl());
+            preparedStatement.setInt(1, wordImage.getWordImageId());
+            preparedStatement.setString(2, wordImage.getWord());
+            preparedStatement.setString(3, wordImage.getImageUrl());
 
             int rowsInserted = preparedStatement.executeUpdate();
 
@@ -213,7 +216,7 @@ public class DatabaseHandler implements SpeicherStrategy {
         return latestUserAnswerId;
     }
 
-    public boolean addUserWordImage(User user, WordImage wordImage) throws SQLException{
+    public boolean addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException{
         String insertQuery = "INSERT INTO user_answers (id, user_id, word_image_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -225,6 +228,22 @@ public class DatabaseHandler implements SpeicherStrategy {
 
             return rowsAffected > 0;
         }
+    }
+
+    public int getLatestWordImageId() throws SQLException{
+        int latestWordImageId = 0;
+
+        String query = "SELECT MAX(id) AS latest_word_image_id FROM word_image";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                latestWordImageId = resultSet.getInt("latest_word_image_id");
+            }
+        }
+
+        return latestWordImageId;
     }
 
     public static void main(String[] args) {

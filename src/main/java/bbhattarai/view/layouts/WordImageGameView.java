@@ -41,15 +41,15 @@ public class WordImageGameView {
         imageView.setFitWidth(400);
 
         nameField = new TextField();
-        nameField.setPromptText("Enter the name of the image");
+        nameField.setPromptText("Name eingeben");
         nameField.setMinWidth(200);
         nameField.setMinHeight(50);
 
-        if (wordImages.size() == 0 || wordImages.size() < 2) {
+        if (wordImages.isEmpty() || wordImages.size() < 2) {
             gameEnded = true;
-            nextImageButton = new Button("End game");
+            nextImageButton = new Button("Spielen beenden");
         }else{
-            nextImageButton = new Button("Next");
+            nextImageButton = new Button("Nächstes Bild");
         }
         nextImageButton.setMinWidth(100);
         nextImageButton.setMinHeight(50);
@@ -59,8 +59,14 @@ public class WordImageGameView {
         // Get a random index
         this.currentImageIndex = getRandomIndex();
 
-        // Display the image
-        imageView.setImage(new Image(wordImages.get(currentImageIndex).getImageUrl()));
+        // Display the image if it is possible otherwise display a message that image could not be displayed
+        Image image = new Image(wordImages.get(currentImageIndex).getImageUrl());
+        if (image.isError()) {
+            JOptionPane.showMessageDialog(null, "Bild konnte nicht geladen werden");
+        } else {
+            imageView.setImage(image);
+        }
+
         nameField.setText("");
 
 
@@ -80,7 +86,7 @@ public class WordImageGameView {
                 if (enteredName.isEmpty()) {
                     // Set the border color to red
                     nameField.setStyle("-fx-border-color: red");
-                    JOptionPane.showMessageDialog(null, "Input cannot be empty");
+                    JOptionPane.showMessageDialog(null, "Name darf nicht leer sein");
                     return;
                 }
 
@@ -108,7 +114,7 @@ public class WordImageGameView {
 
                 if (currentImageIndex == -1) {
                     gameEnded = true;
-                    nextImageButton.setText("End game");
+                    nextImageButton.setText("Spielen beenden");
                 }
 
                 if (!gameEnded) {
@@ -125,9 +131,6 @@ public class WordImageGameView {
 
 
         });
-
-
-
         HBox inputBox = new HBox(nameField, nextImageButton);
         inputBox.setSpacing(10);
         inputBox.setAlignment(Pos.CENTER);
@@ -153,7 +156,7 @@ public class WordImageGameView {
 
     public int getRandomIndex() {
         // Return -1 if the list is empty
-        if (wordImages.size() == 0) {
+        if (wordImages.isEmpty()) {
             return -1;
         }
         return (int) (Math.random() * wordImages.size());

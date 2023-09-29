@@ -17,25 +17,32 @@ public class WordImageInputEntryView {
         this.controller = controller;
 
 
-        addImageButton = new Button("New image and word entry");
+        addImageButton = new Button("Bild hinzufügen");
         addImageButton.setStyle("-fx-font-size: 18px; -fx-background-color: orange; -fx-text-fill: white;");
-        addImageButton.setMinWidth(100);
-        addImageButton.setMinHeight(50);
+        addImageButton.setMinWidth(80);
+        addImageButton.setMinHeight(25);
 
 
 
         addImageButton.setOnAction(event -> {
             // Ask for the word and image url with a dialog
-            String word = JOptionPane.showInputDialog("Enter the word");
-            String imageUrl = JOptionPane.showInputDialog("Enter the image url");
+            String word = JOptionPane.showInputDialog("Das Wort eingeben");
+            String imageUrl = JOptionPane.showInputDialog("Gültige Bild URL eingeben (endend mit .jpg oder .png)");
 
-            // If the user clicks cancel, return
-            if (word == null || imageUrl == null) {
+            // If either of the input is null / empty, show an error message
+            if (word == null || word.isEmpty() || imageUrl == null || imageUrl.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ungültige Eingabe");
                 return;
             }
 
             // If the user clicks ok, add the word and image url
-            WordImage wordImage = new WordImage(word, imageUrl);
+            WordImage wordImage = null;
+            try{
+                wordImage = new WordImage(word, imageUrl);
+            }catch (Exception e){
+                JOptionPane.showMessageDialog(null, "Ungültige Eingabe");
+                return;
+            }
             controller.newimageWordInputEntry(wordImage);
         });
     }
