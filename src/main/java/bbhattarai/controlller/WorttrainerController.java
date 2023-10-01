@@ -13,15 +13,32 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+/**
+ * Die Klasse WorttrainerController ist für die Steuerung der Interaktionen
+ * zwischen dem Modell (Worttrainer) und der Ansicht (WorttrainerView) verantwortlich.
+ */
 public class WorttrainerController {
     private Worttrainer model;
     private WorttrainerView view;
 
+
+    /**
+     * Konstruiert einen neuen WorttrainerController mit dem angegebenen Modell und der Ansicht.
+     *
+     * @param model Das Worttrainer-Modell.
+     * @param view  Die WorttrainerView-Ansicht.
+     */
     public WorttrainerController(Worttrainer model, WorttrainerView view) {
         this.model = model;
         this.view = view;
     }
 
+    /**
+     * Behandelt den Anmelde- oder Registrierungsvorgang für einen Benutzer.
+     *
+     * @param username Der vom Benutzer eingegebene Benutzername.
+     */
     public void handleLoginRegister(String username) {
         try {
             User user = model.getUser(username);
@@ -45,91 +62,113 @@ public class WorttrainerController {
         }
     }
 
+    /**
+     * Wechselt zur Benutzer-Startseite.
+     *
+     * @param user Der Benutzer, für den die Startseite angezeigt wird.
+     */
     public void backToUserHome(User user){
-        // Instantiate the NextView
+        // Instanziert die nächste Ansicht (NextView)
         UserView nextView = new UserView(user, this);
-        // Set up the NextView as the new view to display
+        // Setzt die NextView als die neue anzuzeigende Ansicht
         view.setDisplayedView(nextView.getView());
     }
 
-
-    public void handleStartGame(User user,boolean isEndRestartButtonClicked){
+    /**
+     * Startet ein neues Spiel für den Benutzer.
+     *
+     * @param user                        Der Benutzer, der das Spiel startet.
+     * @param isEndRestartButtonClicked   Gibt an, ob der "Spiel neu starten"-Button geklickt wurde.
+     */
+    public void handleStartGame(User user, boolean isEndRestartButtonClicked) {
         List<WordImage> wordImages = null;
         try {
             wordImages = model.getUnansweredWordImages(user);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null, "Fehler beim Abrufen der Wortbilder");
         }
-        if(wordImages.isEmpty()) {
-            // Ask user if they want to play again
+        if (wordImages.isEmpty()) {
+            // Fragt den Benutzer, ob er noch einmal spielen möchte
             int dialogResult = JOptionPane.YES_OPTION;
-            if(!isEndRestartButtonClicked) {
-                dialogResult = JOptionPane.showConfirmDialog(null, "Du hast alle Fragen beantwortet. Willst du noch einmal spielen?", "Warning", JOptionPane.YES_NO_OPTION);
+            if (!isEndRestartButtonClicked) {
+                dialogResult = JOptionPane.showConfirmDialog(null, "Du hast alle Fragen beantwortet. Möchtest du noch einmal spielen?", "Warnung", JOptionPane.YES_NO_OPTION);
             }
 
             if (dialogResult == JOptionPane.YES_OPTION) {
                 try {
                     model.clearUserAnswers(user);
                     wordImages = model.getUnansweredWordImages(user);
-                    // Clear user answers
+                    // Löscht die Antworten des Benutzers
                     user.resetStats();
 
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "Fehler beim Löschen der Benutzerantworten");
                 }
-            }else{
-                // Display the new statsview
+            } else {
+                // Zeigt die neue Statistikansicht an
                 StatsGameView nextView = new StatsGameView(user, this);
                 view.setDisplayedView(nextView.getView());
                 return;
             }
         }
 
-        // Start the game with WordImageGameView as the view
+        // Startet das Spiel mit der WordImageGameView als Ansicht
         WordImageGameView nextView = new WordImageGameView(this, wordImages, user);
         view.setDisplayedView(nextView.getView());
-
     }
 
-
-    public void handleEndGame(User user){
-        // Display the new statsview
+    /**
+     * Zeigt die Statistikansicht nach Spielende an.
+     *
+     * @param user Der Benutzer, dessen Statistik angezeigt wird.
+     */
+    public void handleEndGame(User user) {
+        // Zeigt die neue Statistikansicht an
         StatsGameView nextView = new StatsGameView(user, this);
         view.setDisplayedView(nextView.getView());
-
     }
 
-    public void saveUserData(User user){
-            try {
+    /**
+     * Speichert die Benutzerdaten.
+     *
+     * @param user Der Benutzer, dessen Informationen gespeichert werden.
+     */
+    public void saveUserData(User user) {
+        try {
             model.saveUserInfo(user);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Speichern der Benutzerinformationen");
         }
     }
 
-    public void addUserAnsweredWordImage(User user, WordImage wordImage){
-        try{
+    /**
+     * Fügt die Antwort des Benutzers auf ein Wortbild hinzu.
+     *
+     * @param user      Der Benutzer, der die Antwort hinzufügt.
+     * @param wordImage Das WordImage-Objekt, auf das geantwortet wurde.
+     */
+    public void addUserAnsweredWordImage(User user, WordImage wordImage) {
+        try {
             model.addUserWordImageAnswer(user, wordImage);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Speichern der Benutzerantworten");
         }
     }
 
-
-    public void newimageWordInputEntry(WordImage wordImage){
-        try{
-            boolean response = model.saveWordImage(wordImage);
-            if(response){
-                JOptionPane.showMessageDialog(null, "Wort und Bild erfolgreich gespeichert");
-            }else{
-                JOptionPane.showMessageDialog(null, "Fehler beim Speichern des Wortes und Bildes");
-            }
-
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Fehler beim Speichern des Wortes und Bildes" +
-                    "");
+    /**
+     * Fügt eine neue Bildworteingabe in die Datenbank ein.
+     *
+     * @param wordImage Das WordImage-Objekt mit dem Wort und der Bild-URL.
+     */
+    public void newImageWordInputEntry(WordImage wordImage) {
+        try {
+            model.saveWordImage(wordImage);
+            JOptionPane.showMessageDialog(null, "Wort und Bild gespeichert");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Fehler beim Speichern des Wortes und Bildes");
         }
     }
+
 
 
 

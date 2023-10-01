@@ -2,43 +2,40 @@ package bbhattarai.model;
 
 import java.time.LocalDateTime;
 
+
 /**
- * Represents a user in the application.
+ * Diese Klasse repräsentiert einen Benutzer in der Anwendung. Ein Benutzer kann Spiele spielen und Statistiken über seine Spiele führen.
  */
 public class User {
 
-    private int userId;
-    private String username;
-    private int totalPlay;
-    private int wins;
-    private int losses;
-    private LocalDateTime lastPlayedDate;
-
+    private int userId; // Die eindeutige ID des Benutzers.
+    private String username; // Der Benutzername des Benutzers.
+    private int totalPlay; // Die Gesamtanzahl der Spiele des Benutzers.
+    private int wins; // Die Anzahl der Siege des Benutzers.
+    private int losses; // Die Anzahl der Niederlagen des Benutzers.
+    private LocalDateTime lastPlayedDate; // Das Datum und die Uhrzeit des letzten Spiels des Benutzers.
 
     /**
-     * Constructs a new User object with the given username.
+     * Konstruktor, der einen neuen Benutzer mit einem gegebenen Benutzernamen erstellt.
      *
-     * @param username The username of the user.
+     * @param username Der Benutzername des Benutzers.
      */
     public User(String username) {
         this.username = username;
     }
 
-
-
     /**
-     * Constructs a new User object with the given username, total number of plays, number of wins, number of losses,
-     * and last played date and time.
+     * Konstruktor, der einen neuen Benutzer mit allen angegebenen Eigenschaften erstellt.
      *
-     * @param userID         The user's unique identifier.
-     * @param username       The username of the user.
-     * @param totalPlay      The total number of plays.
-     * @param wins           The number of wins.
-     * @param losses         The number of losses.
-     * @param lastPlayedDate The last played date and time.
+     * @param userId         Die eindeutige ID des Benutzers.
+     * @param username       Der Benutzername des Benutzers.
+     * @param totalPlay      Die Gesamtanzahl der Spiele des Benutzers.
+     * @param wins           Die Anzahl der Siege des Benutzers.
+     * @param losses         Die Anzahl der Niederlagen des Benutzers.
+     * @param lastPlayedDate Das Datum und die Uhrzeit des letzten Spiels des Benutzers.
      */
-    public User(int userID, String username, int totalPlay, int wins, int losses, LocalDateTime lastPlayedDate) {
-        this.userId = userID;
+    public User(int userId, String username, int totalPlay, int wins, int losses, LocalDateTime lastPlayedDate) {
+        this.userId = userId;
         this.username = username;
         this.totalPlay = totalPlay;
         this.wins = wins;
@@ -47,130 +44,132 @@ public class User {
     }
 
     /**
-     * Gets the user's unique identifier.
+     * Gibt die eindeutige ID des Benutzers zurück.
      *
-     * @return The user's unique identifier.
+     * @return Die Benutzer-ID.
      */
     public int getUserId() {
         return userId;
     }
 
     /**
-     * Sets the user's unique identifier.
+     * Legt die eindeutige ID des Benutzers fest.
      *
-     * @param userId The user's unique identifier.
+     * @param userId Die Benutzer-ID.
      */
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
     /**
-     * Gets the username of the user.
+     * Gibt den Benutzernamen des Benutzers zurück.
      *
-     * @return The username of the user.
+     * @return Der Benutzername.
      */
     public String getUsername() {
         return username;
     }
 
-/**
-     * Sets the username of the user.
+    /**
+     * Legt den Benutzernamen des Benutzers fest.
      *
-     * @param username The username of the user.
+     * @param username Der Benutzername.
      */
-
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * Gets the total number of plays for the user.
+     * Gibt die Gesamtanzahl der Spiele des Benutzers zurück.
      *
-     * @return The total number of plays.
+     * @return Die Gesamtanzahl der Spiele.
      */
     public int getTotalPlay() {
         return totalPlay;
     }
 
     /**
-     * Sets the total number of plays for the user.
+     * Legt die Gesamtanzahl der Spiele des Benutzers fest.
      *
-     * @param totalPlay The total number of plays.
+     * @param totalPlay Die Gesamtanzahl der Spiele.
      */
     public void setTotalPlay(int totalPlay) {
         this.totalPlay = totalPlay;
     }
 
     /**
-     * Gets the number of wins for the user.
+     * Gibt die Anzahl der Siege des Benutzers zurück.
      *
-     * @return The number of wins.
+     * @return Die Anzahl der Siege.
      */
     public int getWins() {
         return wins;
     }
 
     /**
-     * Sets the number of wins for the user.
+     * Legt die Anzahl der Siege des Benutzers fest.
      *
-     * @param wins The number of wins.
+     * @param wins Die Anzahl der Siege.
      */
     public void setWins(int wins) {
         this.wins = wins;
     }
 
     /**
-     * Gets the number of losses for the user.
+     * Gibt die Anzahl der Niederlagen des Benutzers zurück.
      *
-     * @return The number of losses.
+     * @return Die Anzahl der Niederlagen.
      */
     public int getLosses() {
         return losses;
     }
 
     /**
-     * Sets the number of losses for the user.
+     * Legt die Anzahl der Niederlagen des Benutzers fest.
      *
-     * @param losses The number of losses.
+     * @param losses Die Anzahl der Niederlagen.
      */
     public void setLosses(int losses) {
         this.losses = losses;
     }
 
     /**
-     * Gets the date and time when the user last played.
+     * Gibt das Datum und die Uhrzeit des letzten Spiels des Benutzers zurück.
      *
-     * @return The last played date and time.
+     * @return Das Datum und die Uhrzeit des letzten Spiels.
      */
     public LocalDateTime getLastPlayedDate() {
         return lastPlayedDate;
     }
 
     /**
-     * Sets the date and time when the user last played.
+     * Legt das Datum und die Uhrzeit des letzten Spiels des Benutzers fest.
      *
-     * @param lastPlayedDate The last played date and time.
+     * @param lastPlayedDate Das Datum und die Uhrzeit des letzten Spiels.
      */
     public void setLastPlayedDate(LocalDateTime lastPlayedDate) {
         this.lastPlayedDate = lastPlayedDate;
     }
 
-
     /**
-     * Resets the user's statistics.
+     * Setzt die Statistiken des Benutzers zurück, einschließlich Gesamtanzahl der Spiele, Siege und Niederlagen.
      */
     public void resetStats() {
         this.totalPlay = 0;
         this.wins = 0;
         this.losses = 0;
     }
+
     /**
-     * {@inheritDoc}
+     * Gibt eine Zeichenfolgendarstellung des Benutzers zurück.
+     *
+     * @return Eine Zeichenfolge, die den Benutzer darstellt.
      */
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
+                ", username='" + username + '\'' +
                 ", totalPlay=" + totalPlay +
                 ", wins=" + wins +
                 ", losses=" + losses +

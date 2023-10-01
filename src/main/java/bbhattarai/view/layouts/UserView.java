@@ -3,17 +3,20 @@ package bbhattarai.view.layouts;
 import bbhattarai.controlller.WorttrainerController;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
+import bbhattarai.view.WorttrainerView;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-public class UserView {
+public class UserView extends WorttrainerView {
     private BorderPane view;
-
-    WorttrainerController controller;
+    private WorttrainerController controller;
+    private User user;
 
     public UserView(User user, WorttrainerController controller) {
+        super();
+        this.user = user;
         this.controller = controller;
         view = new BorderPane();
 
@@ -42,7 +45,7 @@ public class UserView {
         });
 
         startGameButton.setOnAction(event -> {
-            controller.handleStartGame(user,false);
+            this.controller.handleStartGame(this.user,false);
         });
         content.getChildren().add(startGameButton);
 

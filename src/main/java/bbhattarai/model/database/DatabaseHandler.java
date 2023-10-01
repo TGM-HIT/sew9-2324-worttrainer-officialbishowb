@@ -3,8 +3,6 @@ package bbhattarai.model.database;
 import bbhattarai.model.SpeicherStrategy;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
-
-import java.io.*;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -15,75 +13,55 @@ import java.util.List;
 public class DatabaseHandler implements SpeicherStrategy {
     private final Connection connection;
 
-    public DatabaseHandler() {
+    /**
+     * Konstruktor der Klasse DatabaseHandler, der eine Verbindung zur Datenbank herstellt und die Datenbank initialisiert.
+     *
+     * @throws SQLException Falls ein Fehler beim Verbindungsaufbau oder der Initialisierung auftritt.
+     */
+    public DatabaseHandler() throws SQLException {
         this.connection = DatabaseConnector.connect();
+        this.initDatabase();
     }
 
-
-    public void initTables(){
-        String srcPath = System.getProperty("user.dir");
-        String sql_script = srcPath + "/src/main/java/bbhattarai/model/database/tables.sql";
-        try {
-            InputStream inputStream = getClass().getResourceAsStream(sql_script);
-            if (inputStream == null) {
-                System.out.println("inputStream is null");
-                return;
-            }
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                connection.createStatement().execute(line);
-            }
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public List<WordImage> getWordImages() throws SQLException {
-        List<WordImage> wordImages = new ArrayList<>();
-        String query = "SELECT word_image_id, word, image_url FROM word_image";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                int wordImageId = resultSet.getInt("word_image_id");
-                String word = resultSet.getString("word");
-                String imageUrl = resultSet.getString("image_url");
-
-                WordImage wordImage = new WordImage(wordImageId, word, imageUrl);
-                wordImages.add(wordImage);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return wordImages;
+    /**
+     * Initialisiert die Datenbank mithilfe eines DatabaseInitializer-Objekts.
+     *
+     * @throws SQLException Falls ein Fehler bei der Initialisierung der Datenbank auftritt.
+     */
+    public void initDatabase() throws SQLException {
+        DatabaseInitializer databaseInitializer = new DatabaseInitializer(connection, this);
+        databaseInitializer.initializeDatabase();
     }
 
-    public boolean saveWordImage(WordImage wordImage) throws SQLException {
-        wordImage.setWordImageId(getLatestWordImageId()+1);
+    /**
+     * Speichert ein WordImage-Objekt in der Datenbank.
+     *
+     * @param wordImage Das WordImage-Objekt, das in der Datenbank gespeichert werden soll.
+     * @throws SQLException Falls ein Fehler beim Speichern des Objekts in der Datenbank auftritt.
+     */
+    public void saveWordImage(WordImage wordImage) throws SQLException {
+        wordImage.setWordImageId(getLatestWordImageId() + 1);
         String insertQuery = "INSERT INTO word_image (id, word, image_url) VALUES (?, ?, ?)";
-
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setInt(1, wordImage.getWordImageId());
             preparedStatement.setString(2, wordImage.getWord());
             preparedStatement.setString(3, wordImage.getImageUrl());
 
-            int rowsInserted = preparedStatement.executeUpdate();
-
-            if (rowsInserted > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
-    public boolean saveUserInfo(User user) throws SQLException {
+
+    /**
+     * Speichert Benutzerinformationen in der Datenbank oder ersetzt sie, wenn der Benutzer bereits existiert.
+     *
+     * @param user Das User-Objekt, dessen Informationen gespeichert werden sollen.
+     * @throws SQLException Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
+     */
+    public void saveUserInfo(User user) throws SQLException {
         String insertQuery = "INSERT OR REPLACE INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -93,12 +71,18 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setInt(4, user.getWins());
             preparedStatement.setInt(5, user.getLosses());
             preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
-            int rowsAffected = preparedStatement.executeUpdate();
 
-            return rowsAffected > 0;
+            preparedStatement.executeUpdate();
         }
     }
 
+    /**
+     * Ruft unausgeblendete WordImage-Objekte ab, die der Benutzer noch nicht beantwortet hat.
+     *
+     * @param user Das User-Objekt, für das unausgeblendete WordImage-Objekte abgerufen werden sollen.
+     * @return Eine Liste von unausgeblendeten WordImage-Objekten, die der Benutzer noch nicht beantwortet hat.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
     public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
         List<WordImage> wordImages = new ArrayList<>();
         String query = "SELECT id, word, image_url FROM word_image WHERE id NOT IN (SELECT id FROM user_answers WHERE user_id = ?)";
@@ -122,18 +106,31 @@ public class DatabaseHandler implements SpeicherStrategy {
         return wordImages;
     }
 
-    public boolean clearUserAnswers(User user) throws SQLException {
+
+    /**
+     * Löscht alle Benutzerantworten in der Datenbank, die einem bestimmten Benutzer zugeordnet sind.
+     *
+     * @param user Das User-Objekt, für das die Benutzerantworten gelöscht werden sollen.
+     * @throws SQLException Falls ein Fehler beim Löschen der Benutzerantworten aus der Datenbank auftritt.
+     */
+    public void clearUserAnswers(User user) throws SQLException {
         String deleteQuery = "DELETE FROM user_answers WHERE user_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
             preparedStatement.setInt(1, user.getUserId());
 
-            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-            return rowsAffected > 0;
         }
     }
 
+    /**
+     * Ruft Benutzerinformationen aus der Datenbank anhand des Benutzernamens ab.
+     *
+     * @param username Der Benutzername, für den Benutzerinformationen abgerufen werden sollen.
+     * @return Ein User-Objekt, das die abgerufenen Benutzerinformationen enthält, oder null, wenn der Benutzer nicht gefunden wurde.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
     public User getUser(String username) throws SQLException {
         User user = null;
 
@@ -153,7 +150,7 @@ public class DatabaseHandler implements SpeicherStrategy {
                 int losses = resultSet.getInt("losses");
                 long lastPlayedMillis = resultSet.getLong("last_played_date");
 
-                // Convert milliseconds to LocalDateTime
+                // Konvertiert Millisekunden in LocalDateTime
                 LocalDateTime lastPlayedDateTime = Instant.ofEpochMilli(lastPlayedMillis)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime();
@@ -166,6 +163,13 @@ public class DatabaseHandler implements SpeicherStrategy {
     }
 
 
+
+    /**
+     * Ruft die neueste Benutzer-ID aus der Datenbank ab.
+     *
+     * @return Die neueste Benutzer-ID in der Datenbank.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
     public int getLatestUserId() throws SQLException {
         int latestUserId = 0;
 
@@ -182,9 +186,16 @@ public class DatabaseHandler implements SpeicherStrategy {
         return latestUserId;
     }
 
-    public boolean saveNewUser(User user) throws SQLException {
+    /**
+     * Speichert Benutzerinformationen in der Datenbank oder aktualisiert sie, wenn der Benutzer bereits vorhanden ist.
+     *
+     * @param user Das User-Objekt, das gespeichert oder aktualisiert werden soll.
+     * @throws SQLException Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
+     */
+    public void saveNewUser(User user) throws SQLException {
         String insertQuery = "INSERT INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
 
+        System.out.println("Saving new user");
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setInt(1, user.getUserId());
             preparedStatement.setString(2, user.getUsername());
@@ -192,15 +203,18 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setInt(4, user.getWins());
             preparedStatement.setInt(5, user.getLosses());
             preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            return rowsAffected > 0;
+            preparedStatement.executeUpdate();
         }
     }
 
-    public int getLatestUserAnswerId() throws SQLException{
 
+    /**
+     * Ruft die neueste Benutzerantwort-ID aus der Datenbank ab.
+     *
+     * @return Die neueste Benutzerantwort-ID in der Datenbank.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
+    public int getLatestUserAnswerId() throws SQLException{
         int latestUserAnswerId = 0;
 
         String query = "SELECT MAX(id) AS latest_user_answer_id FROM user_answers";
@@ -216,7 +230,14 @@ public class DatabaseHandler implements SpeicherStrategy {
         return latestUserAnswerId;
     }
 
-    public boolean addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException{
+    /**
+     * Fügt die Benutzerantwort auf ein Wortbild in die Datenbank ein.
+     *
+     * @param user      Das User-Objekt, dem die Antwort zugeordnet ist.
+     * @param wordImage Das WordImage-Objekt, auf das geantwortet wurde.
+     * @throws SQLException Falls ein Fehler beim Speichern der Benutzerantwort in der Datenbank auftritt.
+     */
+    public void addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException{
         String insertQuery = "INSERT INTO user_answers (id, user_id, word_image_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -224,12 +245,17 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setInt(2, user.getUserId());
             preparedStatement.setInt(3, wordImage.getWordImageId());
 
-            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-            return rowsAffected > 0;
         }
     }
 
+    /**
+     * Ruft die neueste WordImage-ID aus der Datenbank ab.
+     *
+     * @return Die neueste WordImage-ID in der Datenbank.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
     public int getLatestWordImageId() throws SQLException{
         int latestWordImageId = 0;
 
@@ -246,8 +272,28 @@ public class DatabaseHandler implements SpeicherStrategy {
         return latestWordImageId;
     }
 
-    public static void main(String[] args) {
-        DatabaseHandler databaseHandler = new DatabaseHandler();
-        databaseHandler.initTables();
+
+    /**
+     * Überprüft, ob Dummy-Daten in der Datenbank existieren.
+     *
+     * @return true, wenn es Dummy-Daten in der Datenbank gibt; false, wenn keine Dummy-Daten vorhanden sind.
+     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     */
+    public boolean dummyDataExist() throws SQLException {
+        String query = "SELECT COUNT(*) AS count FROM word_image";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                return count > 0;
+            }
+        }
+
+        return false;
     }
+
+
+
 }

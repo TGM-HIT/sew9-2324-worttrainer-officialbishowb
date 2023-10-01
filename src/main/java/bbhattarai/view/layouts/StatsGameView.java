@@ -33,15 +33,14 @@ public class StatsGameView {
         statsHeader.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
         // Bold font
-        Font boldFont = Font.font("Arial", FontWeight.BOLD, 12);
         Text totalWins = new Text(String.valueOf(user.getWins()));
-        totalWins.setFont(boldFont);
+        totalWins.setStyle("-fx-font-weight: bold;");
         Text totalLosses = new Text(String.valueOf(user.getLosses()));
-        totalLosses.setFont(boldFont);
+        totalLosses.setStyle("-fx-font-weight: bold;");
         Text totalPlay = new Text(String.valueOf(user.getTotalPlay()));
-        totalPlay.setFont(boldFont);
+        totalPlay.setStyle("-fx-font-weight: bold;");
 
-        statsText = new Text("Gewonnen" + totalWins.getText() + "\nVerloren: " + totalLosses.getText() + "\nInsgesamt gespielt: " + totalPlay.getText());
+        statsText = new Text("Gewonnen: " + totalWins.getText() + "\nVerloren: " + totalLosses.getText() + "\nInsgesamt gespielt: " + totalPlay.getText());
 
         restartGameButton = new Button("Spiel neustarten");
         homeButton = new Button("Home");

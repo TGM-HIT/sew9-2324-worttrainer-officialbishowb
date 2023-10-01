@@ -97,9 +97,12 @@ public class WordImage {
      * @param imageUrl
      * @return
      */
-    public boolean validateImageUrl(String imageUrl){
-        return imageUrl.matches("^(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)$");
+    public boolean validateImageUrl(String imageUrl) {
+        String regex = "(https:\\/\\/)([^\\s\"<,>/]*)(\\/)[^\\s\",><]*\\.(png|jpg|jpeg)(\\?[^\\s\",><]*)?";
+        return imageUrl.matches(regex);
     }
+
+
 
     /**
      * {@inheritDoc}

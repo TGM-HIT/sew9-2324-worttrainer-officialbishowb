@@ -5,8 +5,12 @@ import bbhattarai.model.Worttrainer;
 import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -16,7 +20,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Worttrainer model = new Worttrainer(new DatabaseHandler());
+
+        // Get the primary screen
+        Screen screen = Screen.getPrimary();
+
+        // Calculate the desired width and height (3/4 of the screen size)
+        Rectangle2D bounds = screen.getVisualBounds();
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+
+        currentWidth = (int) (screenWidth * 0.75);
+        currentHeight = (int) (screenHeight * 0.75);
+
+
+        Worttrainer model = null;
+        try {
+            model = new Worttrainer(new DatabaseHandler());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         WorttrainerView view = new WorttrainerView(primaryStage);
         WorttrainerController controller = new WorttrainerController(model, view);
         view.setController(controller);
@@ -33,3 +55,4 @@ public class Main extends Application {
         launch(args);
     }
 }
+

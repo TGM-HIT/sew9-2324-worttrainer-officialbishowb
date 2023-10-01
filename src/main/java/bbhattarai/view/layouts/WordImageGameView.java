@@ -22,13 +22,9 @@ public class WordImageGameView {
     private ImageView imageView;
     private TextField nameField;
     private Button nextImageButton;
-
     private List<WordImage> wordImages;
-
     private int currentImageIndex = 0;
-
     private boolean gameEnded = false;
-
     private User user;
 
     public WordImageGameView(WorttrainerController controller, List<WordImage> wordImages, User user) {
@@ -90,6 +86,9 @@ public class WordImageGameView {
                     return;
                 }
 
+                // Set the border color to black
+                nameField.setStyle("-fx-border-color: black");
+
 
                 // If the input is correct, then we call the handleCorrectAnswer method to add it to the database
                 if (enteredName.equals(wordImages.get(currentImageIndex).getWord())) {
@@ -100,7 +99,6 @@ public class WordImageGameView {
 
                     // Remove the word image from the list so that it is not displayed again
                     this.wordImages.remove(currentImageIndex);
-
                 }else{
                     this.user.setLosses(this.user.getLosses() + 1);
                 }
@@ -144,14 +142,6 @@ public class WordImageGameView {
 
     public BorderPane getView() {
         return view;
-    }
-
-    public void setImage(Image image) {
-        imageView.setImage(image);
-    }
-
-    public String getEnteredName() {
-        return nameField.getText();
     }
 
     public int getRandomIndex() {

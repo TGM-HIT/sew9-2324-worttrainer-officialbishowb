@@ -1,6 +1,7 @@
 package bbhattarai.view.layouts;
 
 import bbhattarai.controlller.WorttrainerController;
+import bbhattarai.view.WorttrainerView;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -14,10 +15,11 @@ public class LoginRegisterView {
     private TextField usernameField;
     private Button loginRegisterButton;
 
-    WorttrainerController handler;
+    WorttrainerController controller;
 
     public LoginRegisterView(WorttrainerController handler) {
-        this.handler = handler;
+        super();
+        this.controller = handler;
         view = new BorderPane();
 
         usernameField = new TextField();
@@ -50,18 +52,10 @@ public class LoginRegisterView {
                 return;
             }
             loginRegisterButton.setText("Bitte warten...");
-            this.handler.handleLoginRegister(username);
+            this.controller.handleLoginRegister(username);
         });
     }
     public BorderPane getView() {
         return view;
-    }
-
-    public TextField getUsernameField() {
-        return usernameField;
-    }
-
-    public Button getLoginRegisterButton() {
-        return loginRegisterButton;
     }
 }

@@ -8,14 +8,12 @@ import javax.swing.*;
 
 public class WordImageInputEntryView {
 
-    private WorttrainerController controller;
-
-
     private Button addImageButton;
+
+    WorttrainerController controller;
 
     public WordImageInputEntryView(WorttrainerController controller) {
         this.controller = controller;
-
 
         addImageButton = new Button("Bild hinzufügen");
         addImageButton.setStyle("-fx-font-size: 18px; -fx-background-color: orange; -fx-text-fill: white;");
@@ -43,7 +41,7 @@ public class WordImageInputEntryView {
                 JOptionPane.showMessageDialog(null, "Ungültige Eingabe");
                 return;
             }
-            controller.newimageWordInputEntry(wordImage);
+            this.controller.newImageWordInputEntry(wordImage);
         });
     }
 
