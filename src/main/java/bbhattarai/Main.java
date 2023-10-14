@@ -1,6 +1,7 @@
 package bbhattarai;
 
 import bbhattarai.controlller.WorttrainerController;
+import bbhattarai.model.PersistentExpection;
 import bbhattarai.model.Worttrainer;
 import bbhattarai.model.database.DatabaseHandler;
 import bbhattarai.view.WorttrainerView;
@@ -36,7 +37,7 @@ public class Main extends Application {
         Worttrainer model = null;
         try {
             model = new Worttrainer(new DatabaseHandler());
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             throw new RuntimeException(e);
         }
         WorttrainerView view = new WorttrainerView(primaryStage);

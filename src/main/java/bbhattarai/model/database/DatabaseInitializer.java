@@ -1,5 +1,7 @@
 package bbhattarai.model.database;
 
+import bbhattarai.model.PersistentExpection;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,9 +15,13 @@ public class DatabaseInitializer {
         this.databaseHandler = databaseHandler;
     }
 
-    public void initializeDatabase() throws SQLException {
+    public void initializeDatabase() throws PersistentExpection {
         createTables();
-        insertDummyDataForWordImage();
+        try {
+            insertDummyDataForWordImage();
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
+        }
     }
 
     private void createTables() {
@@ -69,7 +75,7 @@ public class DatabaseInitializer {
     }
 
 
-    private void insertDummyDataForWordImage() throws SQLException {
+    private void insertDummyDataForWordImage() throws SQLException, PersistentExpection {
             if(databaseHandler.dummyDataExist()){
                 return;
             }

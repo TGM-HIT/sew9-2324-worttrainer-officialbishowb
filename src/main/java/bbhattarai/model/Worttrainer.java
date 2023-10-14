@@ -1,6 +1,5 @@
 package bbhattarai.model;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -44,9 +43,9 @@ public class Worttrainer {
      * Ruft die neueste Benutzer-ID aus der Datenbank ab.
      *
      * @return Die neueste Benutzer-ID.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public int getLatestUserId() throws SQLException {
+    public int getLatestUserId() throws PersistentExpection {
         return speicherStrategy.getLatestUserId();
     }
 
@@ -54,9 +53,9 @@ public class Worttrainer {
      * Speichert die Benutzerinformationen in der Datenbank.
      *
      * @param user Der Benutzer, dessen Informationen gespeichert werden sollen.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public void saveUserInfo(User user) throws SQLException {
+    public void saveUserInfo(User user) throws PersistentExpection {
         speicherStrategy.saveUserInfo(user);
     }
 
@@ -64,9 +63,9 @@ public class Worttrainer {
      * Speichert einen neuen Benutzer in der Datenbank.
      *
      * @param user Der neue Benutzer, der gespeichert werden soll.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public void saveNewUser(User user) throws SQLException {
+    public void saveNewUser(User user) throws PersistentExpection {
         speicherStrategy.saveNewUser(user);
     }
 
@@ -74,9 +73,9 @@ public class Worttrainer {
      * Löscht die Antworten eines Benutzers aus der Datenbank.
      *
      * @param user Der Benutzer, dessen Antworten gelöscht werden sollen.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public void clearUserAnswers(User user) throws SQLException {
+    public void clearUserAnswers(User user) throws PersistentExpection {
         speicherStrategy.clearUserAnswers(user);
     }
 
@@ -85,9 +84,9 @@ public class Worttrainer {
      *
      * @param user Der Benutzer, für den die Liste der unbeantworteten Wortbilder abgerufen werden soll.
      * @return Die Liste der unbeantworteten Wortbilder.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
+    public List<WordImage> getUnansweredWordImages(User user) throws PersistentExpection {
         return speicherStrategy.getUnansweredWordImages(user);
     }
 
@@ -96,9 +95,9 @@ public class Worttrainer {
      *
      * @param username Der Benutzername des gesuchten Benutzers.
      * @return Der gefundene Benutzer oder null, wenn der Benutzer nicht gefunden wurde.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public User getUser(String username) throws SQLException {
+    public User getUser(String username) throws PersistentExpection {
         return speicherStrategy.getUser(username);
     }
 
@@ -107,9 +106,9 @@ public class Worttrainer {
      *
      * @param user      Der Benutzer, der die Antwort gibt.
      * @param wordImage Das Wortbild, auf das geantwortet wird.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public void addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException {
+    public void addUserWordImageAnswer(User user, WordImage wordImage) throws PersistentExpection {
         speicherStrategy.addUserWordImageAnswer(user, wordImage);
     }
 
@@ -118,9 +117,9 @@ public class Worttrainer {
      *
      * @param wordImage Das neue Wortbild, das gespeichert werden soll.
      * @return True, wenn das Wortbild erfolgreich gespeichert wurde, andernfalls False.
-     * @throws SQLException Falls ein SQL-Fehler auftritt.
+     * @throws PersistentExpection Falls ein Fehler auftritt.
      */
-    public void saveWordImage(WordImage wordImage) throws SQLException {
+    public void saveWordImage(WordImage wordImage) throws PersistentExpection {
         speicherStrategy.saveWordImage(wordImage);
     }
 }

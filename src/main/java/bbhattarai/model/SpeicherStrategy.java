@@ -1,22 +1,22 @@
 package bbhattarai.model;
 
-import java.sql.SQLException;
 import java.util.List;
+
 
 public interface SpeicherStrategy {
 
-    void saveUserInfo(User user) throws SQLException;
-    void saveNewUser(User user) throws SQLException;
-    void saveWordImage(WordImage wordImage) throws SQLException;
-    List<WordImage> getUnansweredWordImages(User user) throws SQLException;
-    void clearUserAnswers(User user) throws SQLException;
+    void saveUserInfo(User user) throws PersistentExpection;
+    void saveNewUser(User user) throws PersistentExpection;
+    void saveWordImage(WordImage wordImage) throws PersistentExpection;
+    List<WordImage> getUnansweredWordImages(User user) throws PersistentExpection;
+    void clearUserAnswers(User user) throws PersistentExpection;
 
-    User getUser(String username) throws SQLException;
+    User getUser(String username) throws PersistentExpection;
 
-    int getLatestUserId() throws SQLException;
+    int getLatestUserId() throws PersistentExpection;
 
-    void addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException;
+    void addUserWordImageAnswer(User user, WordImage wordImage) throws PersistentExpection;
 
-     int getLatestUserAnswerId() throws SQLException;
+     int getLatestUserAnswerId() throws PersistentExpection;
 
 }

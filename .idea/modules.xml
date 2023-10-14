@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bbhattarai.iml" filepath="$PROJECT_DIR$/.idea/modules/bbhattarai.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bbhattarai.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bbhattarai.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bbhattarai.test.iml" filepath="$PROJECT_DIR$/.idea/modules/bbhattarai.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.iml" filepath="$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.test.iml" filepath="$PROJECT_DIR$/.idea/modules/sew9-2324-worttrainer-officialbishowb.test.iml" />
     </modules>
   </component>
 </project>

@@ -1,5 +1,6 @@
 package bbhattarai.controlller;
 
+import bbhattarai.model.PersistentExpection;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
 import bbhattarai.model.Worttrainer;
@@ -57,7 +58,7 @@ public class WorttrainerController {
             UserView nextView = new UserView(model.getUser(), this);
             // Set up the NextView as the new view to display
             view.setDisplayedView(nextView.getView());
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Benutzers");
         }
     }
@@ -84,7 +85,7 @@ public class WorttrainerController {
         List<WordImage> wordImages = null;
         try {
             wordImages = model.getUnansweredWordImages(user);
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Abrufen der Wortbilder");
         }
         if (wordImages.isEmpty()) {
@@ -101,7 +102,7 @@ public class WorttrainerController {
                     // Löscht die Antworten des Benutzers
                     user.resetStats();
 
-                } catch (SQLException e) {
+                } catch (PersistentExpection e) {
                     JOptionPane.showMessageDialog(null, "Fehler beim Löschen der Benutzerantworten");
                 }
             } else {
@@ -136,7 +137,7 @@ public class WorttrainerController {
     public void saveUserData(User user) {
         try {
             model.saveUserInfo(user);
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Speichern der Benutzerinformationen");
         }
     }
@@ -150,7 +151,7 @@ public class WorttrainerController {
     public void addUserAnsweredWordImage(User user, WordImage wordImage) {
         try {
             model.addUserWordImageAnswer(user, wordImage);
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Speichern der Benutzerantworten");
         }
     }
@@ -164,7 +165,7 @@ public class WorttrainerController {
         try {
             model.saveWordImage(wordImage);
             JOptionPane.showMessageDialog(null, "Wort und Bild gespeichert");
-        } catch (SQLException e) {
+        } catch (PersistentExpection e) {
             JOptionPane.showMessageDialog(null, "Fehler beim Speichern des Wortes und Bildes");
         }
     }

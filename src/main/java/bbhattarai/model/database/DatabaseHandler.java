@@ -1,8 +1,11 @@
 package bbhattarai.model.database;
 
+import bbhattarai.model.PersistentExpection;
 import bbhattarai.model.SpeicherStrategy;
 import bbhattarai.model.User;
 import bbhattarai.model.WordImage;
+
+
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -16,9 +19,9 @@ public class DatabaseHandler implements SpeicherStrategy {
     /**
      * Konstruktor der Klasse DatabaseHandler, der eine Verbindung zur Datenbank herstellt und die Datenbank initialisiert.
      *
-     * @throws SQLException Falls ein Fehler beim Verbindungsaufbau oder der Initialisierung auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Verbindungsaufbau oder der Initialisierung auftritt.
      */
-    public DatabaseHandler() throws SQLException {
+    public DatabaseHandler() throws PersistentExpection {
         this.connection = DatabaseConnector.connect();
         this.initDatabase();
     }
@@ -26,9 +29,9 @@ public class DatabaseHandler implements SpeicherStrategy {
     /**
      * Initialisiert die Datenbank mithilfe eines DatabaseInitializer-Objekts.
      *
-     * @throws SQLException Falls ein Fehler bei der Initialisierung der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler bei der Initialisierung der Datenbank auftritt.
      */
-    public void initDatabase() throws SQLException {
+    public void initDatabase() throws PersistentExpection {
         DatabaseInitializer databaseInitializer = new DatabaseInitializer(connection, this);
         databaseInitializer.initializeDatabase();
     }
@@ -37,9 +40,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Speichert ein WordImage-Objekt in der Datenbank.
      *
      * @param wordImage Das WordImage-Objekt, das in der Datenbank gespeichert werden soll.
-     * @throws SQLException Falls ein Fehler beim Speichern des Objekts in der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Speichern des Objekts in der Datenbank auftritt.
      */
-    public void saveWordImage(WordImage wordImage) throws SQLException {
+    public void saveWordImage(WordImage wordImage) throws PersistentExpection {
         wordImage.setWordImageId(getLatestWordImageId() + 1);
         String insertQuery = "INSERT INTO word_image (id, word, image_url) VALUES (?, ?, ?)";
 
@@ -50,7 +53,7 @@ public class DatabaseHandler implements SpeicherStrategy {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new PersistentExpection(e.getMessage());
         }
     }
 
@@ -59,9 +62,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Speichert Benutzerinformationen in der Datenbank oder ersetzt sie, wenn der Benutzer bereits existiert.
      *
      * @param user Das User-Objekt, dessen Informationen gespeichert werden sollen.
-     * @throws SQLException Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
      */
-    public void saveUserInfo(User user) throws SQLException {
+    public void saveUserInfo(User user) throws PersistentExpection {
         String insertQuery = "INSERT OR REPLACE INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -73,6 +76,8 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
 
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
     }
 
@@ -81,9 +86,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      *
      * @param user Das User-Objekt, für das unausgeblendete WordImage-Objekte abgerufen werden sollen.
      * @return Eine Liste von unausgeblendeten WordImage-Objekten, die der Benutzer noch nicht beantwortet hat.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public List<WordImage> getUnansweredWordImages(User user) throws SQLException {
+    public List<WordImage> getUnansweredWordImages(User user) throws PersistentExpection {
         List<WordImage> wordImages = new ArrayList<>();
         String query = "SELECT id, word, image_url FROM word_image WHERE id NOT IN (SELECT id FROM user_answers WHERE user_id = ?)";
 
@@ -100,7 +105,7 @@ public class DatabaseHandler implements SpeicherStrategy {
                 wordImages.add(wordImage);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new PersistentExpection(e.getMessage());
         }
 
         return wordImages;
@@ -111,9 +116,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Löscht alle Benutzerantworten in der Datenbank, die einem bestimmten Benutzer zugeordnet sind.
      *
      * @param user Das User-Objekt, für das die Benutzerantworten gelöscht werden sollen.
-     * @throws SQLException Falls ein Fehler beim Löschen der Benutzerantworten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Löschen der Benutzerantworten aus der Datenbank auftritt.
      */
-    public void clearUserAnswers(User user) throws SQLException {
+    public void clearUserAnswers(User user) throws PersistentExpection {
         String deleteQuery = "DELETE FROM user_answers WHERE user_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
@@ -121,6 +126,8 @@ public class DatabaseHandler implements SpeicherStrategy {
 
             preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
     }
 
@@ -129,9 +136,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      *
      * @param username Der Benutzername, für den Benutzerinformationen abgerufen werden sollen.
      * @return Ein User-Objekt, das die abgerufenen Benutzerinformationen enthält, oder null, wenn der Benutzer nicht gefunden wurde.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public User getUser(String username) throws SQLException {
+    public User getUser(String username) throws PersistentExpection {
         User user = null;
 
         String query = "SELECT  user_id, total_play, wins, losses, last_played_date FROM users WHERE username = ?";
@@ -157,6 +164,8 @@ public class DatabaseHandler implements SpeicherStrategy {
 
                 user = new User(userId, username, totalPlay, wins, losses, lastPlayedDateTime);
             }
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
 
         return user;
@@ -168,9 +177,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Ruft die neueste Benutzer-ID aus der Datenbank ab.
      *
      * @return Die neueste Benutzer-ID in der Datenbank.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public int getLatestUserId() throws SQLException {
+    public int getLatestUserId() throws PersistentExpection {
         int latestUserId = 0;
 
         String query = "SELECT MAX(user_id) AS latest_user_id FROM users";
@@ -181,6 +190,8 @@ public class DatabaseHandler implements SpeicherStrategy {
             if (resultSet.next()) {
                 latestUserId = resultSet.getInt("latest_user_id");
             }
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
 
         return latestUserId;
@@ -190,9 +201,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Speichert Benutzerinformationen in der Datenbank oder aktualisiert sie, wenn der Benutzer bereits vorhanden ist.
      *
      * @param user Das User-Objekt, das gespeichert oder aktualisiert werden soll.
-     * @throws SQLException Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Speichern oder Aktualisieren der Benutzerinformationen in der Datenbank auftritt.
      */
-    public void saveNewUser(User user) throws SQLException {
+    public void saveNewUser(User user) throws PersistentExpection {
         String insertQuery = "INSERT INTO users (user_id, username, total_play, wins, losses, last_played_date) VALUES (?, ?, ?, ?, ?, ?)";
 
         System.out.println("Saving new user");
@@ -204,6 +215,8 @@ public class DatabaseHandler implements SpeicherStrategy {
             preparedStatement.setInt(5, user.getLosses());
             preparedStatement.setTimestamp(6, user.getLastPlayedDate() != null ? Timestamp.valueOf(user.getLastPlayedDate()) : null);
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
     }
 
@@ -212,9 +225,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Ruft die neueste Benutzerantwort-ID aus der Datenbank ab.
      *
      * @return Die neueste Benutzerantwort-ID in der Datenbank.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public int getLatestUserAnswerId() throws SQLException{
+    public int getLatestUserAnswerId() throws PersistentExpection{
         int latestUserAnswerId = 0;
 
         String query = "SELECT MAX(id) AS latest_user_answer_id FROM user_answers";
@@ -225,6 +238,8 @@ public class DatabaseHandler implements SpeicherStrategy {
             if (resultSet.next()) {
                 latestUserAnswerId = resultSet.getInt("latest_user_answer_id");
             }
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
 
         return latestUserAnswerId;
@@ -235,9 +250,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      *
      * @param user      Das User-Objekt, dem die Antwort zugeordnet ist.
      * @param wordImage Das WordImage-Objekt, auf das geantwortet wurde.
-     * @throws SQLException Falls ein Fehler beim Speichern der Benutzerantwort in der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Speichern der Benutzerantwort in der Datenbank auftritt.
      */
-    public void addUserWordImageAnswer(User user, WordImage wordImage) throws SQLException{
+    public void addUserWordImageAnswer(User user, WordImage wordImage) throws PersistentExpection{
         String insertQuery = "INSERT INTO user_answers (id, user_id, word_image_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -247,6 +262,8 @@ public class DatabaseHandler implements SpeicherStrategy {
 
             preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
     }
 
@@ -254,9 +271,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Ruft die neueste WordImage-ID aus der Datenbank ab.
      *
      * @return Die neueste WordImage-ID in der Datenbank.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public int getLatestWordImageId() throws SQLException{
+    public int getLatestWordImageId() throws PersistentExpection{
         int latestWordImageId = 0;
 
         String query = "SELECT MAX(id) AS latest_word_image_id FROM word_image";
@@ -267,6 +284,8 @@ public class DatabaseHandler implements SpeicherStrategy {
             if (resultSet.next()) {
                 latestWordImageId = resultSet.getInt("latest_word_image_id");
             }
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
 
         return latestWordImageId;
@@ -277,9 +296,9 @@ public class DatabaseHandler implements SpeicherStrategy {
      * Überprüft, ob Dummy-Daten in der Datenbank existieren.
      *
      * @return true, wenn es Dummy-Daten in der Datenbank gibt; false, wenn keine Dummy-Daten vorhanden sind.
-     * @throws SQLException Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
+     * @throws PersistentExpection Falls ein Fehler beim Abrufen der Daten aus der Datenbank auftritt.
      */
-    public boolean dummyDataExist() throws SQLException {
+    public boolean dummyDataExist() throws PersistentExpection {
         String query = "SELECT COUNT(*) AS count FROM word_image";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -289,6 +308,8 @@ public class DatabaseHandler implements SpeicherStrategy {
                 int count = resultSet.getInt("count");
                 return count > 0;
             }
+        } catch (SQLException e) {
+            throw new PersistentExpection(e.getMessage());
         }
 
         return false;
