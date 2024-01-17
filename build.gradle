@@ -25,6 +25,6 @@ jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-
-mainClassName = 'bbhattarai.Main'
-mainClassName = 'bbhattarai.Main'
+application {
+    mainClass = 'bbhattarai.Main'
+}
