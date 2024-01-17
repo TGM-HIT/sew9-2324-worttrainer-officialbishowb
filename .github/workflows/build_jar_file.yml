@@ -3,7 +3,7 @@ name: Build JAR with Gradle
 on:
   push:
     branches:
-      - main
+      - 1-bug-cant-execute-build-artifact
 
 jobs:
   build:
