@@ -20,9 +20,11 @@ jar {
     manifest {
         attributes('Main-Class': 'bbhattarai.Main')
     }
-    from{
+    from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+mainClassName = 'bbhattarai.Main'
 mainClassName = 'bbhattarai.Main'
