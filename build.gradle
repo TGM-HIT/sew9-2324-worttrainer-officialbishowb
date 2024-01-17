@@ -8,7 +8,7 @@ repositories {
 }
 
 javafx {
-    version = "20"
+    version = "17.0.8"
     modules = [ 'javafx.controls' ]
 }
 
@@ -18,9 +18,10 @@ dependencies {
 
 jar {
     manifest {
-        attributes(
-                'Main-Class': 'bbhattarai.Main'
-        )
+        attributes('Main-Class': 'bbhattarai.Main')
+    }
+    from{
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
