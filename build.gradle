@@ -19,7 +19,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'bhattarai.Main'
+                'Main-Class': 'bbhattarai.Main'
         )
     }
 }
